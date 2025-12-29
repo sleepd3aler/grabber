@@ -11,16 +11,16 @@ public class Post {
 
     private String link;
 
-    private LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created;
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(
             "dd.MM.y HH:mm:ss"
     );
 
-    public Post(int id, String description, String link) {
-        this.id = id;
+    public Post(String description, String link, LocalDateTime created) {
         this.description = description;
         this.link = link;
+        this.created = created;
     }
 
     @Override
@@ -45,4 +45,35 @@ public class Post {
                 '}';
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
 }

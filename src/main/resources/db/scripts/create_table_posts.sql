@@ -1,7 +1,7 @@
 create table posts
 (
     id            serial primary key,
-    text          description,
-    text          link unique,
-    creation_time timestamp
+    description   text        not null,
+    link          text unique not null,
+    creation_time timestamp   not null
 );

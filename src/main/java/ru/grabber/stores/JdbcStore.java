@@ -17,9 +17,7 @@ public class JdbcStore implements Store {
     @Override
     public Post save(Post post) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "insert into posts(title, link, description, creation_time )" +
-                        " values ( ?, ?, ?, ?) " +
-                        "on conflict (link) do nothing ;",
+                "insert into posts(title, link, description, creation_time ) values ( ?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getLink());

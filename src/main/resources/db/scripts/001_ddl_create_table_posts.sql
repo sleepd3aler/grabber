@@ -7,6 +7,4 @@ create table if not exists posts
     creation_time timestamp   not null
 );
 
-drop  table posts;
-
 

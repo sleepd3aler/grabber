@@ -26,7 +26,8 @@ public class SchedulerManager implements AutoCloseable {
 
         try {
             var data = new JobDataMap();
-            var job = newJob()
+            data.put("store", store);
+            var job = newJob(task)
                     .usingJobData(data)
                     .build();
 

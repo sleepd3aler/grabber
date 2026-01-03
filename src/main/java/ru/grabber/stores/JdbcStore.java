@@ -15,15 +15,23 @@ public class JdbcStore implements Store {
     }
 
     @Override
-    public void save(Post post) {
+    public Post save(Post post) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "insert into posts(title, link, description, creation_time )  values ( ?, ?, ?, ?);")) {
+                "insert into posts(title, link, description, creation_time )" +
+                        " values ( ?, ?, ?, ?) " +
+                        "on conflict (link) do nothing ;",
+                Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getLink());
             statement.setString(3, post.getDescription());
             Timestamp created = Timestamp.valueOf(post.getCreated());
             statement.setTimestamp(4, created);
             statement.execute();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                post.setId(resultSet.getLong("id"));
+            }
+            return post;
         } catch (SQLException se) {
             throw new RuntimeException(se);
         }

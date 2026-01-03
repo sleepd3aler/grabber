@@ -11,11 +11,12 @@ public class MemStore implements Store {
     private int ids = 1;
 
     @Override
-    public void save(Post post) {
+    public Post save(Post post) {
         if (post.getId() == 0) {
             post.setId(ids++);
             storage.put(post.getId(), post);
         }
+        return post;
     }
 
     @Override

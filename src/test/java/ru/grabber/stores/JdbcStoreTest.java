@@ -1,11 +1,9 @@
 package ru.grabber.stores;
 
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Properties;
 import org.junit.jupiter.api.*;
 import ru.grabber.model.Post;
@@ -62,8 +60,22 @@ class JdbcStoreTest {
         store.save(first);
         store.save(second);
         store.save(third);
-        second.setId(2);
-        assertThat(store.findById(2L).get()).isEqualTo(second);
+        assertThat(store.findById(second.getId()).get()).isEqualTo(second);
     }
 
+    @Test
+    void whenGetAllThenExpectedResult() {
+        store.save(first);
+        store.save(second);
+        store.save(third);
+        LocalDateTime created = LocalDateTime.of(2026, 1, 1, 1, 15);
+        Post post1 = new Post("title1", "link1", "desc1", created);
+        Post post2 = new Post("title2", "link2", "desc2", created);
+        Post post3 = new Post("title3", "link3", "desc3", created);
+        post1.setId(first.getId());
+        post2.setId(second.getId());
+        post3.setId(third.getId());
+        List<Post> expected = List.of(post1, post2, post3);
+        assertThat(store.getAll()).isEqualTo(expected);
+    }
 }

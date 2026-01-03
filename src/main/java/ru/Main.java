@@ -1,6 +1,7 @@
 package ru;
 
 import java.sql.DriverManager;
+import java.time.LocalDateTime;
 import ru.grabber.model.Post;
 import ru.grabber.service.Config;
 import ru.grabber.service.SchedulerManager;
@@ -13,11 +14,17 @@ public class Main {
     public static void main(String[] args) {
         var config = new Config();
         config.load("application.properties");
-        try (var connection = DriverManager.getConnection(config.get("url"));
+        config.load("rabbit.properties");
+        try (var connection = DriverManager.getConnection(
+                config.get("db.url"),
+                config.get("db.username"),
+                config.get("db.password"));
              var scheduler = new SchedulerManager()) {
             var store = new JdbcStore(connection);
-            var post = new Post();
-            post.setTitle("Super Java Job");
+            var post = new Post("Super Java Job",
+                    "link",
+                    "",
+                    LocalDateTime.of(2026, 1, 3, 12, 50));
             store.save(post);
             scheduler.init();
             scheduler.load(

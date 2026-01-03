@@ -5,11 +5,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Post {
-    private int id;
+    private long id;
 
-    private String description;
+    private String title;
 
     private String link;
+
+    private String description;
 
     private LocalDateTime created;
 
@@ -17,13 +19,29 @@ public class Post {
             "dd.MM.y HH:mm:ss"
     );
 
-    public Post(String description, String link, LocalDateTime created) {
-        this.description = description;
+    public Post() {
+    }
+
+    public Post(String title, String link, String description, LocalDateTime created) {
+        this.title = title;
         this.link = link;
+        this.description = description;
         this.created = created;
     }
 
-    public int getId() {
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public long getId() {
         return id;
     }
 
@@ -71,6 +89,7 @@ public class Post {
     public String toString() {
         return "Post{" +
                 " id=" + id +
+                ", tittle" + title +
                 ", description='" + description + '\'' +
                 ", link='" + link + '\'' +
                 ", created=" + created.format(FORMATTER) +

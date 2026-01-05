@@ -6,5 +6,3 @@ create table if not exists posts
     description   text,
     creation_time timestamp   not null
 );
-
-

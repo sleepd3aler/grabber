@@ -6,7 +6,11 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import ru.grabber.model.Post;
 
 public class HabrCareerParse implements Parse {
@@ -21,17 +25,17 @@ public class HabrCareerParse implements Parse {
         try {
             int pageNumber = 1;
             String fullLink = "%s%s%d%s".formatted(SOURCE_LINK, PREFIX, pageNumber, SUFFIX);
-            var connection = Jsoup.connect(fullLink);
-            var document = connection.get();
-            var rows = document.select(".vacancy-card__inner");
+            Connection connection = Jsoup.connect(fullLink);
+            Document document = connection.get();
+            Elements rows = document.select(".vacancy-card__inner");
             rows.forEach(row -> {
-                var titleElement = row.select(".vacancy-card__title").first();
-                var linkElement = titleElement.child(0);
-                String vacancyName = titleElement.text();
+                Element title = row.select(".vacancy-card__title").first();
+                Element linkElement = title.child(0);
+                String vacancyName = title.text();
                 String link = String.format("%s%s", SOURCE_LINK,
                         linkElement.attr("href"));
-                var dataElement = row.select(".vacancy-card__date").first();
-                var dateTime = dataElement.child(0);
+                Element date = row.select(".vacancy-card__date").first();
+                Element dateTime = date.child(0);
                 LocalDateTime created = ZonedDateTime.parse(dateTime.attr("datetime")).toLocalDateTime();
                 System.out.printf("%s %s %s %n", vacancyName, link, created.toString());
                 Post post = new Post(vacancyName, link, null, created);

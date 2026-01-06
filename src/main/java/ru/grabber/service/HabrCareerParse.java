@@ -34,10 +34,7 @@ public class HabrCareerParse implements Parse {
                 var dateTime = dataElement.child(0);
                 LocalDateTime created = ZonedDateTime.parse(dateTime.attr("datetime")).toLocalDateTime();
                 System.out.printf("%s %s %s %n", vacancyName, link, created.toString());
-                var post = new Post();
-                post.setTitle(vacancyName);
-                post.setLink(link);
-                post.setCreated(created);
+                Post post = new Post(vacancyName, link, null, created);
                 result.add(post);
             });
         } catch (IOException e) {

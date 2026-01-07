@@ -2,7 +2,6 @@ package ru.grabber.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -12,6 +11,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ru.grabber.model.Post;
+import ru.grabber.utils.HabrDateTimeParser;
 
 public class HabrCareerParse implements Parse {
     private static final Logger log = Logger.getLogger(HabrCareerParse.class);
@@ -36,7 +36,8 @@ public class HabrCareerParse implements Parse {
                         linkElement.attr("href"));
                 Element date = row.select(".vacancy-card__date").first();
                 Element dateTime = date.child(0);
-                LocalDateTime created = ZonedDateTime.parse(dateTime.attr("datetime")).toLocalDateTime();
+                var dateTimeParser = new HabrDateTimeParser();
+                LocalDateTime created = dateTimeParser.parse(dateTime.attr("datetime"));
                 System.out.printf("%s %s %s %n", vacancyName, link, created.toString());
                 Post post = new Post(vacancyName, link, null, created);
                 result.add(post);

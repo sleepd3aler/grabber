@@ -22,6 +22,12 @@ public class Post {
     public Post() {
     }
 
+    public Post(String title, String link, LocalDateTime created) {
+        this.title = title;
+        this.link = link;
+        this.created = created;
+    }
+
     public Post(String title, String link, String description, LocalDateTime created) {
         this.title = title;
         this.link = link;

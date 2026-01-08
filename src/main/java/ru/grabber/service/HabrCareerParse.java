@@ -24,7 +24,7 @@ public class HabrCareerParse implements Parse {
 
     @Override
     public List<Post> fetch() {
-        var result = new ArrayList<Post>();
+        List<Post> result = new ArrayList<Post>();
         for (int pageNumber = 1; pageNumber <= TOTAL_PAGES; pageNumber++) {
             Objects.requireNonNull(parseLink(pageNumber)).forEach(row -> {
                 Post post = parsePost(row);
@@ -55,7 +55,7 @@ public class HabrCareerParse implements Parse {
         Element dateTime = date.child(0);
         LocalDateTime created = dateTimeParser.parse(dateTime.attr("datetime"));
         System.out.printf("%s %s %s %n", vacancyName, link, created.toString());
-        return new Post(vacancyName, link, "", created);
+        return new Post(vacancyName, link, created);
     }
 
     public static void main(String[] args) {

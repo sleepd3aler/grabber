@@ -12,18 +12,24 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ru.grabber.model.Post;
+import ru.grabber.utils.DateTimeParser;
 import ru.grabber.utils.HabrDateTimeParser;
 
 public class HabrCareerParse implements Parse {
     private static final Logger log = Logger.getLogger(HabrCareerParse.class);
-    private static final String SOURCE_LINK = "https://career.habr.com";
+    private  String sourceLink;
     private static final String PREFIX = "/vacancies?page=";
     private static final String SUFFIX = "&q=Java%20developer&type=all";
     private static final int TOTAL_PAGES = 5;
-    private final HabrDateTimeParser dateTimeParser = new HabrDateTimeParser();
+    private final DateTimeParser dateTimeParser;
+
+    public HabrCareerParse(DateTimeParser dateTimeParser) {
+        this.dateTimeParser = dateTimeParser;
+    }
 
     @Override
-    public List<Post> fetch() {
+    public List<Post> fetch(String link) {
+        sourceLink = link;
         List<Post> result = new ArrayList<>();
         for (int pageNumber = 1; pageNumber <= TOTAL_PAGES; pageNumber++) {
             Objects.requireNonNull(parseLink(pageNumber)).forEach(row -> {
@@ -38,7 +44,7 @@ public class HabrCareerParse implements Parse {
         Element tittle = element.select(".vacancy-card__title").first();
         Element linkElement = tittle.child(0);
         String vacancyName = tittle.text();
-        String link = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
+        String link = String.format("%s%s", sourceLink, linkElement.attr("href"));
         Element date = element.select(".vacancy-card__date").first();
         Element dateTime = date.child(0);
         String description = parseDescription(link);
@@ -49,7 +55,7 @@ public class HabrCareerParse implements Parse {
     }
 
     private Elements parseLink(int pageNumber) {
-        String fullLink = "%s%s%d%s".formatted(SOURCE_LINK, PREFIX, pageNumber, SUFFIX);
+        String fullLink = "%s%s%d%s".formatted(sourceLink, PREFIX, pageNumber, SUFFIX);
         Document document = loadDocument(fullLink);
         return document.select(".vacancy-card__inner");
     }
@@ -72,7 +78,7 @@ public class HabrCareerParse implements Parse {
     }
 
     public static void main(String[] args) {
-        HabrCareerParse parse = new HabrCareerParse();
-        parse.fetch();
+        HabrCareerParse parse = new HabrCareerParse(new HabrDateTimeParser());
+        parse.fetch("https://career.habr.com");
     }
 }

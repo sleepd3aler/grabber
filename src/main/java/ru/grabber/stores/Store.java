@@ -5,7 +5,7 @@ import java.util.Optional;
 import ru.grabber.model.Post;
 
 public interface Store {
-    public Post save(Post post);
+    Post save(Post post);
 
     List<Post> getAll();
 

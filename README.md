@@ -186,3 +186,5 @@ o `fetch(String link)` - загружает и обрабатывает HTML-с�
 ---
 
 ---
+### Схема зависимостей проекта 
+![Grabber_app_schema.jpg](src/main/resources/Grabber_app_schema.jpg)

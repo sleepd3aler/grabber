@@ -73,6 +73,4 @@ public class HabrCareerParse implements Parse {
         }
         return null;
     }
-
-
 }

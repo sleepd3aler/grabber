@@ -1,39 +1,48 @@
 package ru;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import org.apache.log4j.Logger;
 import ru.grabber.model.Post;
 import ru.grabber.service.Config;
 import ru.grabber.service.SchedulerManager;
 import ru.grabber.service.SuperJobGrab;
+import ru.grabber.service.Web;
 import ru.grabber.stores.JdbcStore;
-
-import static ru.grabber.service.Config.log;
+import ru.grabber.stores.Store;
 
 public class Main {
+    private static final Logger log = Logger.getLogger(Main.class);
+
     public static void main(String[] args) {
-        var config = new Config();
+        Config config = new Config();
         config.load("application.properties");
-        config.load("rabbit.properties");
-        try (var connection = DriverManager.getConnection(
-                config.get("db.url"),
+        try (Connection connection = DriverManager.getConnection(config.get("db.url"),
                 config.get("db.username"),
-                config.get("db.password"));
-             var scheduler = new SchedulerManager()) {
-            var store = new JdbcStore(connection);
-            var post = new Post("Super Java Job",
-                    "link",
-                    "",
-                    LocalDateTime.of(2026, 1, 3, 12, 50));
+                config.get("db.password"))) {
+            Store store = new JdbcStore(connection);
+
+            Post post = new Post();
+            post.setTitle("Super Java Job");
+            post.setLink("");
+            post.setDescription("");
+            post.setCreated(LocalDateTime.of(2025, 2, 12, 21, 39));
             store.save(post);
+
+            SchedulerManager scheduler = new SchedulerManager();
             scheduler.init();
             scheduler.load(
                     Integer.parseInt(config.get("rabbit.interval")),
                     SuperJobGrab.class,
-                    store);
-            Thread.sleep(10000);
-        } catch (Exception e) {
-            log.error("When create a connection", e);
+                    store
+            );
+
+            new Web(store).start(Integer.parseInt(config.get("server.port")));
+        } catch (SQLException e) {
+            log.error("When creating a connection", e);
         }
+
     }
 }

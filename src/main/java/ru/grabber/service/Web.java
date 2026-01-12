@@ -17,7 +17,7 @@ public class Web {
         app.start(port);
         StringBuilder page = new StringBuilder();
         store.getAll().forEach(post ->
-                page.append(post.toString()).append(System.lineSeparator())
+                page.append(post.toString()).append("<br>")
         );
         app.get("/", ctx -> {
             ctx.contentType("text/html; charset=utf-8");

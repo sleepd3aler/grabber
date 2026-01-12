@@ -48,7 +48,7 @@ public class HabrCareerParse implements Parse {
         LocalDateTime created = dateTimeParser.parse(dateTime.attr("datetime"));
         System.out.printf("%s %s %s %n", link, created.toString(), description);
 
-        return new Post(vacancyName, link, created);
+        return new Post(vacancyName, link, description, created);
     }
 
     private Elements parseLink(int pageNumber, String sourceLink) {

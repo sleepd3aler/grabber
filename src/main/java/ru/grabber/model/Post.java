@@ -93,12 +93,13 @@ public class Post {
 
     @Override
     public String toString() {
+        String ln = System.lineSeparator();
         return "Post{" +
                 " id=" + id +
                 ", tittle" + title +
+                ", link='" + link + '\'' + ln +
                 ", description='" + description + '\'' +
-                ", link='" + link + '\'' +
                 ", created=" + created.format(FORMATTER) +
-                '}';
+                '}' + ln;
     }
 }

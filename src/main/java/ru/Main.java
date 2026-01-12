@@ -3,15 +3,13 @@ package ru;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.util.List;
 import org.apache.log4j.Logger;
 import ru.grabber.model.Post;
-import ru.grabber.service.Config;
-import ru.grabber.service.SchedulerManager;
-import ru.grabber.service.SuperJobGrab;
-import ru.grabber.service.Web;
+import ru.grabber.service.*;
 import ru.grabber.stores.JdbcStore;
 import ru.grabber.stores.Store;
+import ru.grabber.utils.HabrDateTimeParser;
 
 public class Main {
     private static final Logger log = Logger.getLogger(Main.class);
@@ -24,13 +22,9 @@ public class Main {
                 config.get("db.password"))) {
             Store store = new JdbcStore(connection);
 
-            Post post = new Post();
-            post.setTitle("Super Java Job");
-            post.setLink("");
-            post.setDescription("");
-            post.setCreated(LocalDateTime.of(2025, 2, 12, 21, 39));
-            store.save(post);
-
+            HabrCareerParse parse = new HabrCareerParse(new HabrDateTimeParser());
+            List<Post> postList = parse.fetch("https://career.habr.com/");
+            postList.forEach(store::save);
             SchedulerManager scheduler = new SchedulerManager();
             scheduler.init();
             scheduler.load(
